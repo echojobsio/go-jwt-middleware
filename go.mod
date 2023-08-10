@@ -16,4 +16,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/echojobsio/go-jwt-middleware/v2 v2.0.0-20230810222541-dc264cbbfc7a => github.com/auth0/go-jwt-middleware/v2 v2.1.0
+replace github.com/auth0/go-jwt-middleware/v2 v2.1.0 => github.com/echojobsio/go-jwt-middleware/v2 v2.0.0-20230810225218-507fde7ccb0d
