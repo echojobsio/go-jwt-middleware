@@ -3,6 +3,7 @@ package jwtmiddleware
 import (
 	"context"
 	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"net/http"
 )
 
@@ -43,6 +44,52 @@ func New(validateToken ValidateToken, opts ...Option) *JWTMiddleware {
 	}
 
 	return m
+}
+
+// HttpRouterCheckJWT is the main JWTMiddleware function which performs the main logic. It
+// is passed a httprouter.Handle which will be called if the JWT passes validation.
+func (m *JWTMiddleware) HttpRouterCheckJWT(next httprouter.Handle) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+		// If we don't validate on OPTIONS and this is OPTIONS
+		// then continue onto next without validating.
+		if !m.validateOnOptions && r.Method == http.MethodOptions {
+			next(w, r, ps)
+			return
+		}
+
+		token, err := m.tokenExtractor(r)
+		if err != nil {
+			// This is not ErrJWTMissing because an error here means that the
+			// tokenExtractor had an error and _not_ that the token was missing.
+			m.errorHandler(w, r, fmt.Errorf("error extracting token: %w", err))
+			return
+		}
+
+		if token == "" {
+			// If credentials are optional continue
+			// onto next without validating.
+			if m.credentialsOptional {
+				next(w, r, ps)
+				return
+			}
+
+			// Credentials were not optional so we error.
+			m.errorHandler(w, r, ErrJWTMissing)
+			return
+		}
+
+		// Validate the token using the token validator.
+		validToken, err := m.validateToken(r.Context(), token)
+		if err != nil {
+			m.errorHandler(w, r, &invalidError{details: err})
+			return
+		}
+
+		// No err means we have a valid token, so set
+		// it into the context and continue onto next.
+		r = r.Clone(context.WithValue(r.Context(), ContextKey{}, validToken))
+		next(w, r, ps)
+	}
 }
 
 // CheckJWT is the main JWTMiddleware function which performs the main logic. It
