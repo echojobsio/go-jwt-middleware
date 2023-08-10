@@ -17,11 +17,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/echojobsio/go-jwt-middleware/v2/internal/oidc"
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/go-jose/go-jose.v2"
-
-	"github.com/auth0/go-jwt-middleware/v2/internal/oidc"
 )
 
 func Test_JWKSProvider(t *testing.T) {

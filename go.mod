@@ -1,6 +1,6 @@
-module github.com/auth0/go-jwt-middleware/v2
+module github.com/echojobsio/go-jwt-middleware/v2
 
-go 1.19
+go 1.20
 
 require (
 	github.com/google/go-cmp v0.5.9
@@ -12,8 +12,6 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/crypto v0.4.0 // indirect
+	golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/auth0/go-jwt-middleware/v2 v2.1.0 => github.com/echojobsio/go-jwt-middleware/v2 v2.0.0-20230810225218-507fde7ccb0d
